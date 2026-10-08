@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KELERENG NUSANTARA</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:system-ui,'Segoe UI',Roboto,sans-serif; user-select:none; -webkit-tap-highlight-color:transparent; }
+  html, body { width:100%; height:100%; overflow:hidden; }
+  body {
+    background: radial-gradient(circle at 20% 30%, #4a3620, #1f1307);
+    display:flex; align-items:center; justify-content:center;
+    color:#f7e7b4;
+  }
+  #app {
+    width:100vw; height:100vh;
+    background: linear-gradient(145deg, #5a4327, #2f1f0e);
+    position:relative;
+    overflow:hidden;
+  }
+  .screen { display:none; flex-direction:column; width:100%; height:100%; }
+  .screen.active { display:flex; }
+
+  /* HOME */
+  .home-wrap {
+    display:flex; width:100%; height:100%;
+    align-items:center; justify-content:center; gap:60px; padding:20px;
+  }
+  .home-left { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .home-right { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; width:340px; }
+  .home-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight:900; color:#f7e7b4;
+    text-shadow: 0 6px 0 #6b4f2a, 0 10px 20px black;
+    letter-spacing:4px; line-height:0.95; text-align:center;
+  }
+  .home-sub {
+    color:#dac292; font-size:0.85rem; letter-spacing:2px;
+    margin-top:12px; text-align:center; font-style:italic;
+    text-shadow:0 2px 4px black; max-width:340px;
+  }
+
+  .btn {
+    background: linear-gradient(to bottom, #f3d9a4, #c49a5c);
+    border:none; border-radius:60px;
+    padding: 12px 20px; font-weight:700; font-size:1.05rem;
+    color:#3b2a14;
+    box-shadow: 0 5px 0 #7a5c34, 0 7px 12px rgba(0,0,0,0.5);
+    transition: all 0.07s; cursor:pointer;
+    border:1px solid #ffeac2;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    white-space:nowrap;
+  }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #7a5c34, 0 4px 8px black; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .btn-secondary {
+    background: linear-gradient(to bottom, #a98b63, #6b4f30);
+    color:#f7e7b4;
+    box-shadow: 0 5px 0 #3d2e1b, 0 7px 12px black;
+    border-color:#b89b6b;
+  }
+  .btn-small { padding:8px 14px; font-size:0.9rem; }
+  .full { width:100%; }
+
+  .page-wrap {
+    width:100%; height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px; padding:16px; overflow:hidden;
+  }
+  .page-title {
+    font-size:1.8rem; font-weight:800;
+    text-shadow:0 4px 0 #6b4f2a;
+    letter-spacing:2px; margin-bottom:4px;
+  }
+  .input-group { width:100%; max-width:320px; }
+  .input-group label { color:#dac292; font-size:0.85rem; display:block; margin-bottom:4px; }
+  input, select {
+    width:100%; padding:10px 16px; border-radius:40px;
+    border:2px solid #b89b6b; background:#2e1f0e; color:#f7e7b4;
+    font-weight:600; font-size:1rem; outline:none;
+  }
+  input:focus, select:focus { border-color:#ffd966; }
+
+  .room-code {
+    font-size:2rem; font-weight:900; color:#ffd966;
+    letter-spacing:6px; text-shadow:0 4px 0 #6b4f2a;
+    margin:8px 0;
+  }
+  .lobby-list {
+    background:#1f1307cc; border-radius:20px;
+    padding:10px 14px; width:100%; max-width:360px;
+    border:1px solid #b89b6b;
+  }
+  .lobby-item {
+    display:flex; align-items:center; gap:8px;
+    padding:5px 6px; color:#f0e0b0;
+    border-bottom:1px solid #5a4327; font-size:0.95rem;
+  }
+  .lobby-item:last-child { border-bottom:none; }
+  .status-message { color:#ffd966; font-weight:600; margin:6px 0; font-size:0.95rem; }
+  .row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+  /* BET PAGE */
+  .bet-page {
+    display:flex; flex-direction:column;
+    width:100%; height:100%;
+    padding:16px 24px 20px;
+    gap:14px;
+    overflow:hidden;
+    align-items:center;
+    justify-content:center;
+  }
+  .bet-header { text-align:center; flex:0 0 auto; }
+  .bet-header h1 {
+    font-size:1.8rem; font-weight:800;
+    text-shadow:0 4px 0 #6b4f2a;
+    letter-spacing:2px;
+    line-height:1.1;
+  }
+  .bet-header p {
+    color:#dac292; font-size:0.85rem;
+    margin-top:4px;
+  }
+  .bet-players-row {
+    display:flex; gap:12px; justify-content:center; align-items:center;
+    flex-wrap:nowrap;
+    flex:0 0 auto;
+  }
+  .bet-card {
+    background:#1f1307cc; border:2px solid #b89b6b; border-radius:16px;
+    padding:10px 12px;
+    width:150px;
+    text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:7px;
+  }
+  .bet-card .color-dot { width:22px; height:22px; }
+  .bet-card .bet-name-input {
+    background: transparent;
+    border: 1px dashed #5a4327;
+    border-radius: 10px;
+    color: #f7e7b4;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+    width: 100%;
+    padding: 3px 6px;
+    outline: none;
+  }
+  .bet-card .bet-name-input:focus {
+    border-color: #ffd966;
+    background: #2e1f0e;
+  }
+  .bet-card .bet-name-static {
+    font-weight: 700; font-size: 0.85rem;
+  }
+  .bet-controls {
+    display:flex; align-items:center; gap:5px;
+    background:#2e1f0e; border-radius:30px; padding:3px 5px;
+    border:1px solid #5a4327;
+  }
+  .bet-controls button {
+    background:#d9b382; border:none; border-radius:50%;
+    width:28px; height:28px; font-weight:900; font-size:1rem;
+    cursor:pointer; color:#3b2a14; line-height:1;
+  }
+  .bet-controls span {
+    min-width:28px; text-align:center; font-weight:800;
+    color:#ffd966; font-size:1.05rem;
+  }
+  .bet-card .bet-label {
+    color:#dac292; font-size:0.7rem;
+  }
+  .bet-pool-info {
+    background:#2e1f0e; border:2px dashed #ffd966; border-radius:16px;
+    padding:8px 22px; color:#ffd966; font-weight:700;
+    font-size:1rem; text-align:center;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .bet-shape-label {
+    color:#dac292; font-size:0.85rem; text-align:center;
+    flex:0 0 auto;
+  }
+  .shape-selector {
+    display:flex; gap:10px; justify-content:center;
+    flex:0 0 auto;
+  }
+  .shape-btn {
+    background:#1f1307cc; border:2px solid #b89b6b;
+    border-radius:14px; padding:10px 18px;
+    color:#f0e0b0; font-weight:700; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    font-size:0.8rem; min-width:100px;
+    transition:all 0.15s;
+  }
+  .shape-btn.active {
+    background:#ffd96640; border-color:#ffd966;
+    box-shadow:0 0 12px #ffd96680;
+    color:#ffd966;
+  }
+  .shape-icon { font-size:1.5rem; }
+  .bet-footer {
+    display:flex; gap:12px; justify-content:center;
+    flex:0 0 auto;
+    margin-top:6px;
+  }
+
+  /* HOW TO — rapat tanpa spasi besar */
+  .howto-wrap {
+    display:grid;
+    grid-template-columns: 1fr 1.2fr;
+    width:100%; height:100%;
+    padding:12px 24px 14px;
+    gap:18px;
+    align-items:center;
+  }
+  .howto-left {
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:8px;
+    height:100%;
+  }
+  .howto-left .page-title {
+    margin:0;
+    font-size:1.6rem;
+  }
+  .howto-illustration {
+    width:100%;
+    max-width:260px;
+    aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .arena-3d {
+    width:100%; height:100%;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #b89b6b 0%, #7a5c34 40%, #3d2e1b 100%);
+    box-shadow:
+      inset 0 8px 20px rgba(255,220,150,0.4),
+      inset 0 -20px 40px rgba(0,0,0,0.7),
+      0 20px 40px rgba(0,0,0,0.6),
+      0 0 40px rgba(255,200,100,0.15);
+    border: 5px solid #d9b382;
+    position:relative;
+    animation: rotateArena 25s linear infinite;
+    transform-style: preserve-3d;
+  }
+  @keyframes rotateArena {
+    from { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.02); }
+    to { transform: rotate(360deg) scale(1); }
+  }
+  .arena-3d::before {
+    content:'';
+    position:absolute; inset:8%;
+    border-radius:50%;
+    border:2px dashed rgba(217,179,130,0.5);
+  }
+  .marble-3d {
+    position:absolute;
+    border-radius:50%;
+    box-shadow:
+      inset -3px -5px 8px rgba(0,0,0,0.5),
+      inset 3px 3px 6px rgba(255,255,255,0.8),
+      0 4px 10px rgba(0,0,0,0.6);
+    transform-style: preserve-3d;
+  }
+  .marble-3d.target {
+    width:14%; height:14%;
+    background: radial-gradient(circle at 30% 30%, #fff 0%, #e74c3c 45%, #7d2318 100%);
+    animation: bounceTarget 3s ease-in-out infinite;
+  }
+  .marble-3d.target.t2 { animation-delay: 0.4s; }
+  .marble-3d.target.t3 { animation-delay: 0.8s; }
+  .marble-3d.target.t4 { animation-delay: 1.2s; }
+  @keyframes bounceTarget {
+    0%,100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
+  }
+  .marble-3d.gacoan {
+    width:17%; height:17%;
+    background: radial-gradient(circle at 30% 30%, #fff 0%, #4A90E2 45%, #1c4a7a 100%);
+    animation: pulseGacoan 1.6s ease-in-out infinite;
+    left:50%; top:50%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      inset -4px -6px 10px rgba(0,0,0,0.5),
+      inset 3px 3px 8px rgba(255,255,255,0.9),
+      0 0 20px #4A90E2,
+      0 0 40px rgba(74,144,226,0.5);
+  }
+  @keyframes pulseGacoan {
+    0%,100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.18); }
+  }
+
+  .howto-right {
+    display:flex; flex-direction:column;
+    gap:6px;
+    height:100%;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .howto-step {
+    background:#1f1307cc; border:1px solid #b89b6b; border-radius:12px;
+    padding:8px 14px;
+    display:flex; align-items:center; gap:10px;
+    color:#f0e0b0; font-size:0.82rem;
+  }
+  .howto-step-num {
+    flex:0 0 auto;
+    width:28px; height:28px;
+    background:linear-gradient(to bottom,#f3d9a4,#c49a5c);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; color:#3b2a14; font-size:0.9rem;
+  }
+
+  /* SETTINGS */
+  .settings-page {
+    width:100%; height:100%;
+    overflow-y:auto;
+    padding:16px 20px 20px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .settings-inner {
+    width:100%; max-width:640px;
+    display:flex; flex-direction:column; gap:14px;
+    padding-bottom:20px;
+  }
+  .settings-header { text-align:center; margin-bottom:4px; }
+  .settings-header h1 {
+    font-size:1.6rem; font-weight:800;
+    text-shadow:0 3px 0 #6b4f2a;
+    letter-spacing:2px;
+  }
+  .settings-section-title {
+    color:#dac292; font-size:0.75rem; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase;
+    padding-left:4px; margin-top:4px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .settings-card {
+    background:linear-gradient(to bottom, #fbf3dd, #f0e2c0);
+    border:2px solid #d9b382;
+    border-radius:16px;
+    padding:12px 16px;
+    display:flex; align-items:center; gap:14px;
+    color:#3b2a14;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  }
+  .settings-card .s-icon {
+    flex:0 0 auto;
+    width:42px; height:42px;
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem;
+    color:#fff;
+  }
+  .s-icon.musik { background:linear-gradient(135deg,#5b7cfa,#3a55d9); }
+  .s-icon.sfx { background:linear-gradient(135deg,#f5b642,#e08b1e); }
+  .s-icon.vol { background:linear-gradient(135deg,#f5b642,#e08b1e); }
+  .s-icon.lang { background:linear-gradient(135deg,#4a9e4a,#2e7a2e); }
+  .s-icon.game { background:linear-gradient(135deg,#8e5bd9,#5a2e9e); }
+
+  .settings-card .s-info {
+    flex:1 1 auto;
+    min-width:0;
+  }
+  .settings-card .s-title {
+    font-weight:800; font-size:0.95rem; color:#3b2a14;
+  }
+  .settings-card .s-desc {
+    font-size:0.75rem; color:#7a5c34;
+    margin-top:2px;
+  }
+
+  .toggle {
+    position:relative;
+    width:52px; height:28px;
+    background:#c9b791;
+    border-radius:20px;
+    cursor:pointer;
+    transition:background 0.2s;
+    flex:0 0 auto;
+    border:1px solid #a08660;
+  }
+  .toggle::after {
+    content:'';
+    position:absolute;
+    top:2px; left:2px;
+    width:22px; height:22px;
+    border-radius:50%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: left 0.2s;
+  }
+  .toggle.on { background:#7bc47f; }
+  .toggle.on::after { left:26px; }
+
+  .slider-wrap {
+    flex:1 1 auto;
+    display:flex; align-items:center; gap:10px;
+    min-width:0;
+  }
+  input[type=range].vol-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width:100%; height:8px;
+    border-radius:6px;
+    background:linear-gradient(to right, #f5b642 0%, #f5b642 var(--val,60%), #c9b791 var(--val,60%), #c9b791 100%);
+    outline:none;
+    cursor:pointer;
+    padding:0;
+  }
+  input[type=range].vol-slider::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    cursor:pointer;
+    border:none;
+  }
+  input[type=range].vol-slider::-moz-range-thumb {
+    width:22px; height:22px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    cursor:pointer;
+    border:none;
+  }
+  .vol-label {
+    font-size:0.8rem; font-weight:700; color:#3b2a14;
+    min-width:36px; text-align:right;
+  }
+
+  .lang-picker { display:flex; gap:6px; flex:0 0 auto; }
+  .lang-btn {
+    background:#f0e2c0; border:2px solid #c9b791;
+    border-radius:10px; padding:6px 14px;
+    font-weight:800; font-size:0.8rem; color:#3b2a14;
+    cursor:pointer;
+    transition:all 0.15s;
+  }
+  .lang-btn.active {
+    background:linear-gradient(to bottom,#f5b642,#e08b1e);
+    border-color:#a08660;
+    color:#fff;
+    box-shadow:0 0 12px #f5b64280;
+  }
+
+  .settings-card.game-card {
+    align-items: flex-start;
+    padding:14px 18px;
+  }
+  .settings-card.game-card .s-info p {
+    font-size:0.82rem;
+    line-height:1.5;
+    color:#5a4327;
+    margin-top:4px;
+  }
+
+  /* GAME */
+  #screenGame {
+    display:none;
+    flex-direction: column;
+    width:100%; height:100%;
+    position:relative;
+    background:#2b1d0e;
+  }
+  #screenGame.active { display:flex; }
+  .canvas-container {
+    position:absolute; inset:0;
+    overflow:hidden;
+    background:#6b4f2a;
+  }
+  canvas { display:block; width:100%; height:100%; touch-action:none; }
+
+  .hud-top-left {
+    position:absolute; top:10px; left:10px;
+    display:flex; flex-direction:column; gap:5px;
+    z-index:10; width:220px;
+  }
+  .hud-top-right {
+    position:absolute; top:10px; right:10px;
+    display:flex; flex-direction:column; gap:5px; align-items:flex-end;
+    z-index:10;
+  }
+  .hud-pill {
+    background: rgba(31,19,7,0.85);
+    border:1px solid #b89b6b;
+    border-radius:30px;
+    padding:6px 14px;
+    color:#f7e7b4;
+    font-weight:700; font-size:0.9rem;
+    display:flex; align-items:center; gap:8px;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+    width:100%;
+  }
+  .hud-pill .color-dot { width:14px; height:14px; flex:0 0 auto; }
+  .hud-pill .hud-name {
+    flex:1 1 auto;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .hud-pill.active-turn {
+    background: rgba(255,217,102,0.3);
+    border:2px solid #ffd966;
+    box-shadow: 0 0 14px #ffd966;
+    transform: scale(1.03);
+  }
+  .hud-pill.dim { opacity: 0.55; }
+  .hud-marble-icon {
+    display:inline-block; width:15px; height:15px;
+    border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #c0392b 60%, #7d2318);
+    box-shadow:0 1px 2px black;
+    flex:0 0 auto;
+  }
+  .hud-count {
+    color:#ffd966; flex:0 0 auto;
+    display:flex; align-items:center; gap:4px;
+    margin-left:auto; padding-left:6px;
+  }
+  .hud-turn {
+    background: rgba(31,19,7,0.9);
+    border:2px solid #ffd966;
+    border-radius:30px;
+    padding:6px 16px;
+    color:#ffd966;
+    font-weight:800; font-size:0.95rem;
+    text-align:right;
+    box-shadow: 0 0 14px rgba(255,217,102,0.4);
+    white-space:nowrap;
+  }
+  .hud-pool {
+    background: rgba(31,19,7,0.85);
+    border:1px dashed #ffd966;
+    border-radius:30px;
+    padding:6px 14px;
+    color:#ffd966;
+    font-weight:700; font-size:0.9rem;
+    white-space:nowrap;
+  }
+  .hud-back-btn {
+    position:absolute; bottom:10px; left:10px;
+    background:rgba(46,31,14,0.9);
+    border:2px solid #b89b6b;
+    border-radius:30px;
+    padding:6px 14px;
+    color:#f7e7b4; font-weight:700; font-size:0.85rem;
+    cursor:pointer; z-index:10;
+  }
+  .turn-banner {
+    position:absolute; top:50%; left:50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: rgba(31,19,7,0.95);
+    border:4px solid #ffd966;
+    border-radius:30px;
+    padding:16px 40px;
+    color:#ffd966;
+    font-weight:900; font-size:2rem;
+    letter-spacing:3px;
+    text-shadow: 0 4px 0 #6b4f2a;
+    z-index:50;
+    pointer-events:none;
+    opacity:0;
+    transition: all 0.4s ease-out;
+    white-space:nowrap;
+    box-shadow: 0 0 40px rgba(255,217,102,0.6);
+  }
+  .turn-banner.show {
+    opacity:1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .toast {
+    position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+    background:#1f1307ee; color:#ffd966;
+    padding:8px 22px; border-radius:40px; border:1px solid #b89b6b;
+    font-weight:600; z-index:999; opacity:0; transition:opacity 0.25s;
+    pointer-events:none; white-space:nowrap; font-size:0.9rem;
+  }
+  .toast.show { opacity:1; }
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.75);
+    display:flex; align-items:center; justify-content:center;
+    z-index:2000;
+  }
+  .modal-box {
+    background:linear-gradient(145deg,#5a4327,#2f1f0e);
+    border:3px solid #b89b6b; border-radius:28px;
+    padding:24px 28px; max-width:360px; width:88%;
+    text-align:center; box-shadow:0 20px 40px black;
+  }
+  .modal-box h3 { color:#ffd966; font-size:1.2rem; margin-bottom:8px; }
+  .modal-box p { color:#f0e0b0; font-size:0.95rem; margin-bottom:18px; }
+  .modal-actions { display:flex; gap:10px; justify-content:center; }
+  .modal-actions .btn { padding:10px 22px; font-size:0.95rem; }
+
+  @media (max-width: 1100px) {
+    .bet-page { padding:10px 14px 14px; gap:10px; }
+    .bet-players-row { gap:8px; }
+    .bet-card { width:120px; padding:8px 10px; }
+    .bet-card .color-dot { width:18px; height:18px; }
+    .bet-card .bet-name-input, .bet-card .bet-name-static { font-size:0.78rem; }
+    .bet-controls button { width:24px; height:24px; font-size:0.9rem; }
+    .bet-controls span { font-size:0.95rem; min-width:24px; }
+    .shape-btn { padding:8px 12px; min-width:80px; font-size:0.72rem; }
+    .shape-icon { font-size:1.2rem; }
+    .bet-pool-info { font-size:0.9rem; padding:6px 16px; }
+    .bet-header h1 { font-size:1.5rem; }
+    .bet-header p { font-size:0.75rem; }
+    .howto-illustration { max-width:200px; }
+  }
+  @media (max-width: 820px) {
+    .bet-players-row { gap:6px; }
+    .bet-card { width:100px; padding:6px 8px; }
+    .bet-card .color-dot { width:16px; height:16px; }
+    .bet-card .bet-name-input, .bet-card .bet-name-static { font-size:0.7rem; }
+    .bet-controls button { width:20px; height:20px; font-size:0.8rem; }
+    .bet-controls span { font-size:0.85rem; min-width:20px; }
+    .shape-btn { padding:6px 9px; min-width:65px; font-size:0.65rem; }
+    .shape-icon { font-size:1rem; }
+    .hud-pill { font-size:0.75rem; padding:4px 9px; }
+    .hud-top-left { width:170px; }
+    .hud-turn { font-size:0.8rem; padding:4px 12px; }
+    .turn-banner { font-size:1.4rem; padding:12px 24px; }
+    .howto-wrap { grid-template-columns: 1fr; gap:8px; padding:8px; }
+    .howto-step { font-size:0.72rem; padding:6px 10px; }
+    .howto-step-num { width:24px; height:24px; font-size:0.8rem; }
+    .howto-illustration { max-width:140px; }
+  }
+  @media (orientation: portrait) and (max-width: 700px) {
+    .home-wrap { flex-direction:column; gap:16px; }
+    .home-right { width:280px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <div class="screen active" id="screenHome">
+    <div class="home-wrap">
+      <div class="home-left">
+        <div class="home-title" data-i18n="title">KELERENG<br>NUSANTARA</div>
+        <div class="home-sub" data-i18n="subtitle">"Permainan Kelereng Tradisional dalam Dunia Digital"</div>
+      </div>
+      <div class="home-right">
+        <button class="btn full" data-action="play" data-i18n="btnPlay">🎮 MAIN</button>
+        <button class="btn btn-secondary full" data-action="multiplayer" data-i18n="btnMulti">👥 MULTIPLAYER</button>
+        <button class="btn btn-secondary full" data-action="vscomputer" data-i18n="btnVs">🤖 VS COMPUTER</button>
+        <button class="btn btn-secondary full" data-action="howto" data-i18n="btnHowto">📖 CARA BERMAIN</button>
+        <button class="btn btn-secondary full" data-action="settings" data-i18n="btnSettings">⚙ PENGATURAN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAY MODE -->
+  <div class="screen" id="screenPlay">
+    <div class="page-wrap">
+      <div class="page-title" data-i18n="menuTitle">MAIN</div>
+      <button class="btn" data-action="local2p" style="width:280px;" data-i18n="menu2p">👥 2 PEMAIN</button>
+      <button class="btn" data-action="local3p" style="width:280px;" data-i18n="menu3p">👥 3 PEMAIN</button>
+      <button class="btn" data-action="local4p" style="width:280px;" data-i18n="menu4p">👥 4 PEMAIN</button>
+      <button class="btn btn-secondary" data-action="backHome" style="width:280px; margin-top:10px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- BET PAGE -->
+  <div class="screen" id="screenBet">
+    <div class="bet-page">
+      <div class="bet-header">
+        <h1 data-i18n="betTitle">TARUHAN KELERENG</h1>
+        <p data-i18n="betSub">Klik nama pemain untuk mengubahnya. Pemenang membawa pulang SEMUA kelereng taruhan.</p>
+      </div>
+
+      <div class="bet-players-row" id="betPlayers"></div>
+
+      <div class="bet-pool-info" id="betPoolInfo" data-i18n="betTotalPrefix">💰 Total Taruhan: 0 kelereng</div>
+
+      <div class="bet-shape-label" data-i18n="shapeLabel">Bentuk Papan Permainan</div>
+      <div class="shape-selector">
+        <div class="shape-btn active" data-shape="circle">
+          <span class="shape-icon">⚪</span>
+          <span data-i18n="shapeCircle">LINGKARAN</span>
+        </div>
+        <div class="shape-btn" data-shape="triangle">
+          <span class="shape-icon">🔺</span>
+          <span data-i18n="shapeTriangle">SEGITIGA</span>
+        </div>
+      </div>
+
+      <div class="bet-footer">
+        <button class="btn" data-action="startBetGame" id="startBetBtn" data-i18n="startBet">MULAI PERTANDINGAN</button>
+        <button class="btn btn-secondary" data-action="backFromBet" data-i18n="back">← KEMBALI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VS COMPUTER -->
+  <div class="screen" id="screenVsComputer">
+    <div class="page-wrap">
+      <div class="page-title">VS COMPUTER</div>
+      <div class="input-group">
+        <label data-i18n="labelName">Nama Pemain</label>
+        <input type="text" id="playerNameVs" value="PEMAIN 1" maxlength="12">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelAI">Tingkat AI</label>
+        <select id="aiDifficulty">
+          <option value="easy" data-i18n="aiEasy">MUDAH</option>
+          <option value="normal" selected data-i18n="aiNormal">NORMAL</option>
+          <option value="hard" data-i18n="aiHard">SULIT</option>
+        </select>
+      </div>
+      <button class="btn" data-action="gotoBetVsComputer" style="width:280px;" data-i18n="next">LANJUT →</button>
+      <button class="btn btn-secondary" data-action="backHome" style="width:280px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- MULTIPLAYER -->
+  <div class="screen" id="screenMultiplayer">
+    <div class="page-wrap">
+      <div class="page-title">MULTIPLAYER</div>
+      <button class="btn" data-action="createRoom" style="width:280px;" data-i18n="createRoom">👥 BUAT ROOM</button>
+      <button class="btn btn-secondary" data-action="joinRoom" style="width:280px;" data-i18n="joinRoom">🔗 GABUNG ROOM</button>
+      <button class="btn btn-secondary" data-action="backHome" style="width:280px; margin-top:10px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- CREATE ROOM -->
+  <div class="screen" id="screenCreateRoom">
+    <div class="page-wrap">
+      <div class="page-title" data-i18n="createRoom">BUAT ROOM</div>
+      <div class="input-group">
+        <label data-i18n="labelName">Nama Pemain</label>
+        <input type="text" id="hostName" value="Amelia" maxlength="12">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelCount">Jumlah Pemain</label>
+        <select id="maxPlayers">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+        </select>
+      </div>
+      <button class="btn" data-action="doCreateRoom" style="width:280px;" data-i18n="createRoom">BUAT ROOM</button>
+      <button class="btn btn-secondary" data-action="backMultiplayer" style="width:280px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- ROOM LOBBY -->
+  <div class="screen" id="screenRoomLobby">
+    <div class="page-wrap">
+      <div class="page-title">ROOM KELERENG</div>
+      <div class="room-code" id="roomCodeDisplay">KLR-4821</div>
+      <div class="lobby-list" id="lobbyList"></div>
+      <div class="status-message" id="lobbyStatus" data-i18n="waitingPlayers">MENUNGGU PEMAIN...</div>
+      <div class="row">
+        <button class="btn btn-small" data-action="copyRoomCode" data-i18n="copyCode">📋 SALIN KODE</button>
+        <button class="btn btn-small btn-secondary" data-action="inviteFriend" data-i18n="invite">🔗 UNDANG TEMAN</button>
+      </div>
+      <button class="btn" id="startRoomBtn" data-action="goToRoomBet" disabled style="margin-top:10px; width:280px;" data-i18n="nextBet">LANJUT KE TARUHAN →</button>
+      <button class="btn btn-secondary" data-action="backHome" style="width:280px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- JOIN ROOM -->
+  <div class="screen" id="screenJoinRoom">
+    <div class="page-wrap">
+      <div class="page-title" data-i18n="joinRoom">GABUNG ROOM</div>
+      <div class="input-group">
+        <label data-i18n="labelCode">Kode Room</label>
+        <input type="text" id="joinRoomCode" placeholder="KLR-____" maxlength="8">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelName">Nama Pemain</label>
+        <input type="text" id="joinName" value="Budi" maxlength="12">
+      </div>
+      <button class="btn" data-action="doJoinRoom" style="width:280px;" data-i18n="joinBtn">GABUNG</button>
+      <div class="status-message" id="joinStatus"></div>
+      <button class="btn btn-secondary" data-action="backMultiplayer" style="width:280px;" data-i18n="back">← KEMBALI</button>
+    </div>
+  </div>
+
+  <!-- HOW TO — tanpa spasi besar -->
+  <div class="screen" id="screenHowTo">
+    <div class="howto-wrap">
+      <div class="howto-left">
+        <div class="page-title" data-i18n="howtoTitle">CARA BERMAIN</div>
+        <div class="howto-illustration">
+          <div class="arena-3d">
+            <div class="marble-3d target" style="top:22%; left:20%;"></div>
+            <div class="marble-3d target t2" style="top:30%; left:68%;"></div>
+            <div class="marble-3d target t3" style="top:65%; left:32%;"></div>
+            <div class="marble-3d target t4" style="top:62%; left:70%;"></div>
+            <div class="marble-3d gacoan"></div>
+          </div>
+        </div>
+      </div>
+      <div class="howto-right">
+        <div class="howto-step"><div class="howto-step-num">1</div><div data-i18n="step1">Setiap pemain bertaruh kelereng sebelum pertandingan dimulai.</div></div>
+        <div class="howto-step"><div class="howto-step-num">2</div><div data-i18n="step2">Pilih bentuk papan: Lingkaran atau Segitiga.</div></div>
+        <div class="howto-step"><div class="howto-step-num">3</div><div data-i18n="step3">Tarik dari kelereng gacoan untuk mengarahkan dan menentukan kekuatan sentilan.</div></div>
+        <div class="howto-step"><div class="howto-step-num">4</div><div data-i18n="step4">Lepaskan untuk meluncurkan kelereng ke arah target.</div></div>
+        <div class="howto-step"><div class="howto-step-num">5</div><div data-i18n="step5">Kelereng target yang keluar dari papan = 1 kelereng untuk Anda.</div></div>
+        <div class="howto-step"><div class="howto-step-num">6</div><div data-i18n="step6">Giliran berpindah setelah semua kelereng berhenti bergerak.</div></div>
+        <div class="howto-step"><div class="howto-step-num">7</div><div data-i18n="step7">Pemenang membawa pulang SEMUA kelereng taruhan!</div></div>
+        <button class="btn btn-secondary" data-action="backHome" style="width:100%; margin-top:4px;" data-i18n="back">← KEMBALI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS (tanpa DATA) -->
+  <div class="screen" id="screenSettings">
+    <div class="settings-page">
+      <div class="settings-inner">
+        <div class="settings-header">
+          <h1 data-i18n="settingsTitle">PENGATURAN</h1>
+        </div>
+
+        <div class="settings-section-title" data-i18n="sectionAudio">🔊 AUDIO</div>
+
+        <div class="settings-card">
+          <div class="s-icon musik">🎵</div>
+          <div class="s-info">
+            <div class="s-title" data-i18n="musicTitle">Musik</div>
+            <div class="s-desc" data-i18n="musicDesc">Musik latar belakang</div>
+          </div>
+          <div class="toggle on" id="toggleMusic"></div>
+        </div>
+
+        <div class="settings-card">
+          <div class="s-icon sfx">🔔</div>
+          <div class="s-info">
+            <div class="s-title" data-i18n="sfxTitle">Efek Suara</div>
+            <div class="s-desc" data-i18n="sfxDesc">Suara tombol & gameplay</div>
+          </div>
+          <div class="toggle on" id="toggleSfx"></div>
+        </div>
+
+        <div class="settings-card">
+          <div class="s-icon vol">🔊</div>
+          <div class="s-info">
+            <div class="s-title" data-i18n="volTitle">Volume</div>
+            <div class="s-desc" data-i18n="volDesc">Kenyaringan suara</div>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="60">
+            <span class="vol-label" id="volLabel">60%</span>
+          </div>
+        </div>
+
+        <div class="settings-section-title" data-i18n="sectionLang">🌐 BAHASA</div>
+
+        <div class="settings-card">
+          <div class="s-icon lang">🌐</div>
+          <div class="s-info">
+            <div class="s-title" data-i18n="langTitle">Bahasa</div>
+            <div class="s-desc" data-i18n="langDesc">Pilih bahasa tampilan</div>
+          </div>
+          <div class="lang-picker">
+            <button class="lang-btn active" data-lang="id">ID</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+          </div>
+        </div>
+
+        <div class="settings-section-title" data-i18n="sectionGame">🎮 GAME</div>
+
+        <div class="settings-card game-card">
+          <div class="s-icon game">🎮</div>
+          <div class="s-info">
+            <div class="s-title">KELERENG NUSANTARA</div>
+            <p data-i18n="gameDesc">Kelereng Nusantara adalah adaptasi digital dari permainan kelereng tradisional Indonesia. Pemain menyentil kelereng gacoan untuk mendorong kelereng target keluar dari lingkaran atau segitiga. Kalah-menang ditentukan oleh jumlah kelereng yang berhasil dikumpulkan dari taruhan bersama.</p>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" data-action="backHome" style="width:100%; max-width:360px; align-self:center; margin-top:10px;" data-i18n="back">← KEMBALI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="screenGame">
+    <div class="canvas-container">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="hud-top-left" id="hudTopLeft"></div>
+    <div class="hud-top-right">
+      <div class="hud-turn" id="hudTurn">🎯 GILIRAN: —</div>
+      <div class="hud-pool" id="hudPool">💰 Total Taruhan: 0</div>
+    </div>
+
+    <div class="turn-banner" id="turnBanner">GILIRAN: PEMAIN 1</div>
+
+    <button class="hud-back-btn" data-action="tryQuitGame">← KELUAR</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const I18N = {
+  id: {
+    title: 'KELERENG<br>NUSANTARA',
+    subtitle: '"Permainan Kelereng Tradisional dalam Dunia Digital"',
+    btnPlay: '🎮 MAIN',
+    btnMulti: '👥 MULTIPLAYER',
+    btnVs: '🤖 VS COMPUTER',
+    btnHowto: '📖 CARA BERMAIN',
+    btnSettings: '⚙ PENGATURAN',
+    menuTitle: 'MAIN',
+    menu2p: '👥 2 PEMAIN',
+    menu3p: '👥 3 PEMAIN',
+    menu4p: '👥 4 PEMAIN',
+    back: '← KEMBALI',
+    next: 'LANJUT →',
+    betTitle: 'TARUHAN KELERENG',
+    betSub: 'Klik nama pemain untuk mengubahnya. Pemenang membawa pulang SEMUA kelereng taruhan.',
+    betTotalPrefix: '💰 Total Taruhan: 0 kelereng',
+    shapeLabel: 'Bentuk Papan Permainan',
+    shapeCircle: 'LINGKARAN',
+    shapeTriangle: 'SEGITIGA',
+    startBet: 'MULAI PERTANDINGAN',
+    labelName: 'Nama Pemain',
+    labelAI: 'Tingkat AI',
+    labelCount: 'Jumlah Pemain',
+    labelCode: 'Kode Room',
+    aiEasy: 'MUDAH',
+    aiNormal: 'NORMAL',
+    aiHard: 'SULIT',
+    createRoom: '👥 BUAT ROOM',
+    joinRoom: '🔗 GABUNG ROOM',
+    waitingPlayers: 'MENUNGGU PEMAIN...',
+    copyCode: '📋 SALIN KODE',
+    invite: '🔗 UNDANG TEMAN',
+    nextBet: 'LANJUT KE TARUHAN →',
+    joinBtn: 'GABUNG',
+    howtoTitle: 'CARA BERMAIN',
+    step1: 'Setiap pemain bertaruh kelereng sebelum pertandingan dimulai.',
+    step2: 'Pilih bentuk papan: Lingkaran atau Segitiga.',
+    step3: 'Tarik dari kelereng gacoan untuk mengarahkan dan menentukan kekuatan sentilan.',
+    step4: 'Lepaskan untuk meluncurkan kelereng ke arah target.',
+    step5: 'Kelereng target yang keluar dari papan = 1 kelereng untuk Anda.',
+    step6: 'Giliran berpindah setelah semua kelereng berhenti bergerak.',
+    step7: 'Pemenang membawa pulang SEMUA kelereng taruhan!',
+    settingsTitle: 'PENGATURAN',
+    sectionAudio: '🔊 AUDIO',
+    sectionLang: '🌐 BAHASA',
+    sectionGame: '🎮 GAME',
+    musicTitle: 'Musik',
+    musicDesc: 'Musik latar belakang',
+    sfxTitle: 'Efek Suara',
+    sfxDesc: 'Suara tombol & gameplay',
+    volTitle: 'Volume',
+    volDesc: 'Kenyaringan suara',
+    langTitle: 'Bahasa',
+    langDesc: 'Pilih bahasa tampilan',
+    gameDesc: 'Kelereng Nusantara adalah adaptasi digital dari permainan kelereng tradisional Indonesia. Pemain menyentil kelereng gacoan untuk mendorong kelereng target keluar dari lingkaran atau segitiga. Kalah-menang ditentukan oleh jumlah kelereng yang berhasil dikumpulkan dari taruhan bersama.',
+    totalBet: '💰 Total Taruhan: {n} kelereng',
+    turnLabel: '🎯 GILIRAN:',
+    poolLabel: '💰 Total Taruhan: {n}',
+    kelereng: 'Kelereng',
+  },
+  en: {
+    title: 'KELERENG<br>NUSANTARA',
+    subtitle: '"Traditional Marbles Game in Digital World"',
+    btnPlay: '🎮 PLAY',
+    btnMulti: '👥 MULTIPLAYER',
+    btnVs: '🤖 VS COMPUTER',
+    btnHowto: '📖 HOW TO PLAY',
+    btnSettings: '⚙ SETTINGS',
+    menuTitle: 'PLAY',
+    menu2p: '👥 2 PLAYERS',
+    menu3p: '👥 3 PLAYERS',
+    menu4p: '👥 4 PLAYERS',
+    back: '← BACK',
+    next: 'NEXT →',
+    betTitle: 'MARBLE BET',
+    betSub: 'Click player name to edit. Winner takes ALL bet marbles.',
+    betTotalPrefix: '💰 Total Bet: 0 marbles',
+    shapeLabel: 'Board Shape',
+    shapeCircle: 'CIRCLE',
+    shapeTriangle: 'TRIANGLE',
+    startBet: 'START MATCH',
+    labelName: 'Player Name',
+    labelAI: 'AI Level',
+    labelCount: 'Number of Players',
+    labelCode: 'Room Code',
+    aiEasy: 'EASY',
+    aiNormal: 'NORMAL',
+    aiHard: 'HARD',
+    createRoom: '👥 CREATE ROOM',
+    joinRoom: '🔗 JOIN ROOM',
+    waitingPlayers: 'WAITING FOR PLAYERS...',
+    copyCode: '📋 COPY CODE',
+    invite: '🔗 INVITE FRIEND',
+    nextBet: 'NEXT TO BET →',
+    joinBtn: 'JOIN',
+    howtoTitle: 'HOW TO PLAY',
+    step1: 'Each player bets marbles before the match starts.',
+    step2: 'Choose board shape: Circle or Triangle.',
+    step3: 'Drag from the shooter marble to aim and set power.',
+    step4: 'Release to launch the marble toward targets.',
+    step5: 'Target marbles leaving the board = 1 marble for you.',
+    step6: 'Turn passes after all marbles stop moving.',
+    step7: 'Winner takes ALL bet marbles!',
+    settingsTitle: 'SETTINGS',
+    sectionAudio: '🔊 AUDIO',
+    sectionLang: '🌐 LANGUAGE',
+    sectionGame: '🎮 GAME',
+    musicTitle: 'Music',
+    musicDesc: 'Background music',
+    sfxTitle: 'Sound Effects',
+    sfxDesc: 'Button & gameplay sounds',
+    volTitle: 'Volume',
+    volDesc: 'Sound loudness',
+    langTitle: 'Language',
+    langDesc: 'Choose display language',
+    gameDesc: 'Kelereng Nusantara is a digital adaptation of Indonesian traditional marbles. Players flick the shooter marble to push target marbles out of the circle or triangle. Win/lose is determined by the number of marbles collected from the shared bet.',
+    totalBet: '💰 Total Bet: {n} marbles',
+    turnLabel: '🎯 TURN:',
+    poolLabel: '💰 Total Bet: {n}',
+    kelereng: 'Marbles',
+  },
+};
+
+function t(key, vars) {
+  let s = (I18N[progress.language] && I18N[progress.language][key]) || I18N.id[key] || key;
+  if (vars) {
+    for (const k in vars) s = s.replace('{'+k+'}', vars[k]);
+  }
+  return s;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (val.includes('<br>')) el.innerHTML = val;
+    else el.textContent = val;
+  });
+  // Update label kelereng di bet cards
+  document.querySelectorAll('.bet-label').forEach(el => el.textContent = t('kelereng'));
+  // Update pool info
+  updateBetPool();
+  updateHUDPool();
+  updateHUDTurn();
+  updateLobbyStatus();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const toastEl = document.getElementById('toast');
+const turnBannerEl = document.getElementById('turnBanner');
+
+let audioCtx = null;
+let musicNodes = null;
+let musicTimer = null;
+
+const PHASE = { IDLE:'idle', SHOOTING:'shooting', SETTLING:'settling', SWITCHING:'switching' };
+const BOARD_SHAPE = { CIRCLE:'circle', TRIANGLE:'triangle' };
+
+const state = {
+  screen: 'home',
+  players: [],
+  activePlayerIndex: 0,
+  targets: [],
+  gacoans: [],
+  marbles: [],
+  gameActive: false,
+  gameOver: false,
+  currentDrag: null,
+  aimingAngle: 0,
+  phase: PHASE.IDLE,
+  aiThinking: false,
+  aiTimer: null,
+  switchTimer: null,
+  settleTimer: null,
+  roomCode: '',
+  isHost: false,
+  lobbyPlayers: [],
+  lobbyMaxPlayers: 4,
+  aiDifficulty: 'normal',
+  lastTime: 0,
+  animationId: null,
+  betAmounts: [],
+  totalBet: 0,
+  pendingConfig: null,
+  betReturnScreen: 'play',
+  boardShape: BOARD_SHAPE.CIRCLE,
+};
+
+const FRICTION = 0.988;
+const MIN_SPEED = 0.15;
+const WALL_BOUNCE = 0.65;
+const TARGET_RADIUS = 11;
+const GACOAN_RADIUS = 13;
+const BOARD_RADIUS_RATIO = 0.42;
+
+const PLAYER_COLORS = ['#4A90E2', '#E67E22', '#9B59B6', '#2ECC71'];
+const TARGET_COLOR = '#C0392B';
+const TARGET_COLOR_ALT = '#E74C3C';
+
+const STORAGE_KEY = 'kelereng_nusantara_v13';
+
+// ============================================================
+// AUDIO
+// ============================================================
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, duration, type='sine', volume=0.15) {
+  if (!progress.sfxEnabled) return;
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    const v = volume * progress.volumeLevel;
+    gain.gain.value = v;
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+const sfxShoot = () => { playTone(600,0.08,'square',0.1); playTone(400,0.12,'sine',0.08); };
+const sfxCollision = () => playTone(200,0.05,'triangle',0.08);
+const sfxTargetOut = () => { playTone(800,0.1,'sine',0.15); playTone(1000,0.15,'sine',0.12); };
+const sfxTurn = () => { playTone(700,0.1,'sine',0.12); playTone(900,0.12,'sine',0.1); };
+const sfxWin = () => [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.2,'sine',0.12),i*120));
+const sfxBet = () => playTone(700,0.06,'triangle',0.1);
+
+// ============================================================
+// BACKGROUND MUSIC (Web Audio API loop)
+// ============================================================
+function startMusic() {
+  if (!progress.musicEnabled) return;
+  if (musicNodes) return;
+  initAudio();
+  try {
+    // Melodi pentatonik sederhana yang looping
+    const notes = [
+      261.63, 329.63, 392.00, 523.25, 392.00, 329.63,  // C E G C G E
+      293.66, 349.23, 440.00, 587.33, 440.00, 349.23,  // D F A D A F
+      329.63, 392.00, 493.88, 659.25, 493.88, 392.00,  // E G B E B G
+      261.63, 329.63, 392.00, 523.25, 392.00, 329.63,  // C E G C G E
+    ];
+    const noteDuration = 0.5;
+    let currentIndex = 0;
+    let nextNoteTime = audioCtx.currentTime + 0.1;
+
+    function scheduleNote() {
+      if (!progress.musicEnabled) return;
+      // Mainkan 1 nada
+      const freq = notes[currentIndex];
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const vol = 0.04 * progress.volumeLevel;
+      gain.gain.setValueAtTime(0, nextNoteTime);
+      gain.gain.linearRampToValueAtTime(vol, nextNoteTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + noteDuration * 0.9);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(nextNoteTime);
+      osc.stop(nextNoteTime + noteDuration);
+
+      // Tambahkan bass lembut setiap 4 nada
+      if (currentIndex % 4 === 0) {
+        const bassOsc = audioCtx.createOscillator();
+        const bassGain = audioCtx.createGain();
+        bassOsc.type = 'triangle';
+        bassOsc.frequency.value = notes[currentIndex] / 2;
+        const bassVol = 0.03 * progress.volumeLevel;
+        bassGain.gain.setValueAtTime(0, nextNoteTime);
+        bassGain.gain.linearRampToValueAtTime(bassVol, nextNoteTime + 0.1);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + noteDuration * 1.8);
+        bassOsc.connect(bassGain);
+        bassGain.connect(audioCtx.destination);
+        bassOsc.start(nextNoteTime);
+        bassOsc.stop(nextNoteTime + noteDuration * 2);
+      }
+
+      nextNoteTime += noteDuration;
+      currentIndex = (currentIndex + 1) % notes.length;
+      musicTimer = setTimeout(scheduleNote, noteDuration * 1000 - 20);
+    }
+
+    musicNodes = { stop: () => { if (musicTimer) clearTimeout(musicTimer); musicTimer = null; musicNodes = null; } };
+    scheduleNote();
+  } catch(e) { console.warn('Music error', e); }
+}
+
+function stopMusic() {
+  if (musicNodes && musicNodes.stop) musicNodes.stop();
+  if (musicTimer) { clearTimeout(musicTimer); musicTimer = null; }
+  musicNodes = null;
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function loadProgress() {
+  try { const d = localStorage.getItem(STORAGE_KEY); if (d) return JSON.parse(d); } catch(e){}
+  return {
+    musicEnabled:true,
+    sfxEnabled:true,
+    volumeLevel:0.6,
+    language:'id',
+  };
+}
+function saveProgress(p) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch(e){} }
+let progress = loadProgress();
+updateSoundUI();
+
+function updateSoundUI() {
+  const slider = document.getElementById('volSlider');
+  const label = document.getElementById('volLabel');
+  if (slider) {
+    slider.value = Math.round(progress.volumeLevel * 100);
+    slider.style.setProperty('--val', (progress.volumeLevel*100) + '%');
+  }
+  if (label) label.textContent = Math.round(progress.volumeLevel * 100) + '%';
+  const tM = document.getElementById('toggleMusic');
+  const tS = document.getElementById('toggleSfx');
+  if (tM) tM.classList.toggle('on', progress.musicEnabled);
+  if (tS) tS.classList.toggle('on', progress.sfxEnabled);
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === progress.language);
+  });
+}
+
+// ============================================================
+// SCREEN NAV
+// ============================================================
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen' + name.charAt(0).toUpperCase() + name.slice(1));
+  if (el) el.classList.add('active');
+  state.screen = name;
+
+  // Reset form nama pemain VS Computer setiap kali masuk
+  if (name === 'vsComputer') {
+    const input = document.getElementById('playerNameVs');
+    if (input) input.value = 'PEMAIN 1';
+  }
+}
+
+// ============================================================
+// BET PAGE
+// ============================================================
+function openBetPage(config, returnScreen) {
+  state.pendingConfig = config;
+  state.betAmounts = config.map(() => 5);
+  state.betReturnScreen = returnScreen || 'play';
+  renderBetPage();
+  showScreen('bet');
+}
+
+function renderBetPage() {
+  const container = document.getElementById('betPlayers');
+  container.innerHTML = '';
+  const config = state.pendingConfig;
+  if (!config) return;
+
+  config.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'bet-card';
+    const isAI = p.isAI;
+    card.innerHTML = `
+      <span class="color-dot" style="background:${p.color};"></span>
+      ${isAI
+        ? `<span class="bet-name-static">${p.name} 🤖</span>`
+        : `<input class="bet-name-input" type="text" maxlength="12" value="${p.name}" data-name-idx="${i}" />`
+      }
+      <div class="bet-controls">
+        <button data-bet-dec="${i}">−</button>
+        <span id="betVal_${i}">${state.betAmounts[i]}</span>
+        <button data-bet-inc="${i}">+</button>
+      </div>
+      <div class="bet-label">${t('kelereng')}</div>
+    `;
+    container.appendChild(card);
+  });
+  updateBetPool();
+}
+
+function updateBetPool() {
+  state.totalBet = state.betAmounts.reduce((a,b)=>a+b, 0);
+  const el = document.getElementById('betPoolInfo');
+  if (el) {
+    const key = progress.language === 'en' ? 'totalBet' : 'betTotalPrefix';
+    if (progress.language === 'en') el.textContent = t('totalBet', {n: state.totalBet});
+    else el.textContent = `💰 Total Taruhan: ${state.totalBet} kelereng`;
+  }
+  state.betAmounts.forEach((v, i) => {
+    const e = document.getElementById(`betVal_${i}`);
+    if (e) e.textContent = v;
+  });
+}
+
+// ============================================================
+// POSISI GACOAN
+// ============================================================
+function getGacoanPositions(numPlayers, w, h, cx, cy, boardRadius) {
+  const margin = GACOAN_RADIUS + 20;
+  const distX = boardRadius + Math.min(w, h) * 0.10;
+  const distY = boardRadius + Math.min(w, h) * 0.10;
+  const positions = [];
+
+  if (numPlayers === 2) {
+    positions.push({ x: cx - distX, y: cy });
+    positions.push({ x: cx + distX, y: cy });
+  } else if (numPlayers === 3) {
+    positions.push({ x: cx - distX, y: cy - distY * 0.7 });
+    positions.push({ x: cx + distX, y: cy - distY * 0.7 });
+    positions.push({ x: cx + distX, y: cy + distY * 0.7 });
+  } else {
+    positions.push({ x: cx - distX, y: cy - distY * 0.7 });
+    positions.push({ x: cx + distX, y: cy - distY * 0.7 });
+    positions.push({ x: cx + distX, y: cy + distY * 0.7 });
+    positions.push({ x: cx - distX, y: cy + distY * 0.7 });
+  }
+
+  return positions.map(p => ({
+    x: Math.max(margin, Math.min(w - margin, p.x)),
+    y: Math.max(margin, Math.min(h - margin, p.y)),
+  }));
+}
+
+// ============================================================
+// INIT GAME
+// ============================================================
+function initGame(playersConfig, betAmounts) {
+  state.players = playersConfig.map((p, i) => ({
+    id: i,
+    name: p.name,
+    color: p.color || PLAYER_COLORS[i % PLAYER_COLORS.length],
+    isAI: p.isAI || false,
+    score: 0,
+    bet: betAmounts ? betAmounts[i] : 5,
+  }));
+
+  state.totalBet = state.players.reduce((a,p)=>a+p.bet, 0);
+
+  state.activePlayerIndex = 0;
+  state.gameOver = false;
+  state.gameActive = true;
+  state.phase = PHASE.IDLE;
+  state.currentDrag = null;
+  state.aimingAngle = 0;
+  state.aiThinking = false;
+  clearAllTimers();
+
+  state.marbles = [];
+  state.targets = [];
+  state.gacoans = [];
+
+  showScreen('game');
+  waitForCanvasAndBuild();
+}
+
+function waitForCanvasAndBuild(attempt = 0) {
+  resizeCanvas();
+  if (canvas.width < 100 || canvas.height < 100) {
+    if (attempt < 20) {
+      setTimeout(() => waitForCanvasAndBuild(attempt + 1), 50);
+      return;
+    }
+  }
+  buildMarbles();
+  renderHUDPanel();
+  updateHUDTurn();
+  updateHUDPool();
+  showTurnBanner();
+
+  state.lastTime = performance.now();
+  if (state.animationId) cancelAnimationFrame(state.animationId);
+  gameLoop(state.lastTime);
+
+  if (state.players[0].isAI) scheduleAITurn();
+}
+
+function clearAllTimers() {
+  if (state.aiTimer) { clearTimeout(state.aiTimer); state.aiTimer = null; }
+  if (state.switchTimer) { clearTimeout(state.switchTimer); state.switchTimer = null; }
+  if (state.settleTimer) { clearTimeout(state.settleTimer); state.settleTimer = null; }
+}
+
+function pointInBoard(x, y) {
+  const w = canvas.width, h = canvas.height;
+  const cx = w/2, cy = h/2;
+  const R = Math.min(w, h) * BOARD_RADIUS_RATIO;
+  if (state.boardShape === BOARD_SHAPE.CIRCLE) {
+    return Math.hypot(x-cx, y-cy) <= R;
+  } else {
+    const verts = [];
+    for (let i = 0; i < 3; i++) {
+      const angle = -Math.PI/2 + (i * 2 * Math.PI / 3);
+      verts.push({ x: cx + Math.cos(angle) * R, y: cy + Math.sin(angle) * R });
+    }
+    const sign = (p1, p2, p3) => (p1.x-p3.x)*(p2.y-p3.y) - (p2.x-p3.x)*(p1.y-p3.y);
+    const d1 = sign({x,y}, verts[0], verts[1]);
+    const d2 = sign({x,y}, verts[1], verts[2]);
+    const d3 = sign({x,y}, verts[2], verts[0]);
+    const hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    const hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+    return !(hasNeg && hasPos);
+  }
+}
+
+function buildMarbles() {
+  state.marbles = [];
+  state.targets = [];
+  state.gacoans = [];
+
+  const w = canvas.width, h = canvas.height;
+  const cx = w / 2, cy = h / 2;
+  const boardR = Math.min(w, h) * BOARD_RADIUS_RATIO;
+
+  const numTargets = 10;
+  let attempts = 0;
+  while (state.targets.length < numTargets && attempts < 500) {
+    attempts++;
+    const angle = Math.random() * Math.PI * 2;
+    const r = boardR * (0.15 + Math.random() * 0.55);
+    const tx = cx + Math.cos(angle) * r;
+    const ty = cy + Math.sin(angle) * r;
+    if (state.boardShape === BOARD_SHAPE.TRIANGLE && !pointInBoard(tx, ty)) continue;
+    if (state.targets.some(t => Math.hypot(t.x-tx, t.y-ty) < TARGET_RADIUS*3)) continue;
+    const target = {
+      id: 'target_'+state.targets.length, type:'target',
+      x: tx, y: ty, vx:0, vy:0,
+      radius: TARGET_RADIUS, mass:1,
+      color: state.targets.length%2===0 ? TARGET_COLOR : TARGET_COLOR_ALT,
+      alive:true,
+    };
+    state.targets.push(target);
+    state.marbles.push(target);
+  }
+
+  const positions = getGacoanPositions(state.players.length, w, h, cx, cy, boardR);
+  state.players.forEach((p, i) => {
+    const pos = positions[i] || { x: 50 + i*40, y: 50 };
+    const g = {
+      id: 'gacoan_'+i, type:'gacoan', playerId:i,
+      x: pos.x, y: pos.y, vx:0, vy:0,
+      radius: GACOAN_RADIUS, mass:1.4, color:p.color, alive:true,
+    };
+    state.gacoans.push(g);
+    state.marbles.push(g);
+  });
+}
+
+function resizeCanvas() {
+  const container = canvas.parentElement;
+  if (!container) return;
+  const rect = container.getBoundingClientRect();
+  canvas.width = Math.max(300, Math.floor(rect.width));
+  canvas.height = Math.max(300, Math.floor(rect.height));
+}
+
+// ============================================================
+// HUD
+// ============================================================
+function renderHUDPanel() {
+  const container = document.getElementById('hudTopLeft');
+  container.innerHTML = '';
+  state.players.forEach((p, i) => {
+    const isActive = i === state.activePlayerIndex && state.gameActive;
+    const d = document.createElement('div');
+    d.className = 'hud-pill' + (isActive ? ' active-turn' : ' dim');
+    d.innerHTML = `
+      <span class="color-dot" style="background:${p.color};"></span>
+      <span class="hud-name">${p.name}${p.isAI?' 🤖':''}</span>
+      <span class="hud-count"><span class="hud-marble-icon"></span>${p.score}</span>
+    `;
+    container.appendChild(d);
+  });
+}
+function updateHUDTurn() {
+  const p = state.players[state.activePlayerIndex];
+  if (!p) return;
+  document.getElementById('hudTurn').innerHTML = `${t('turnLabel')} <span style="color:${p.color}">${p.name}</span>`;
+}
+function updateHUDPool() {
+  document.getElementById('hudPool').textContent = t('poolLabel', {n: state.totalBet});
+}
+function showTurnBanner() {
+  const p = state.players[state.activePlayerIndex];
+  if (!p) return;
+  turnBannerEl.textContent = `${t('turnLabel')} ${p.name.toUpperCase()}`;
+  turnBannerEl.style.color = p.color;
+  turnBannerEl.style.borderColor = p.color;
+  turnBannerEl.classList.add('show');
+  setTimeout(() => turnBannerEl.classList.remove('show'), 1200);
+}
+function updateLobbyStatus() {
+  const el = document.getElementById('lobbyStatus');
+  if (!el) return;
+  const enough = state.lobbyPlayers.length >= 2;
+  el.textContent = enough ? (progress.language === 'en' ? 'READY TO CONTINUE TO BET!' : 'SIAP DILANJUT KE TARUHAN!') : t('waitingPlayers');
+}
+
+// ============================================================
+// GAME LOOP
+// ============================================================
+function gameLoop(timestamp) {
+  const dt = Math.min(timestamp - state.lastTime, 32);
+  state.lastTime = timestamp;
+
+  if (state.gameActive && !state.gameOver) {
+    if (state.phase === PHASE.SHOOTING) {
+      updatePhysics();
+      checkTargetsOut();
+      checkAllStopped();
+    }
+  }
+  render();
+  state.animationId = requestAnimationFrame(gameLoop);
+}
+
+function updatePhysics() {
+  const w = canvas.width, h = canvas.height;
+  state.marbles.forEach(m => {
+    if (!m.alive) return;
+    m.x += m.vx; m.y += m.vy;
+    m.vx *= FRICTION; m.vy *= FRICTION;
+    if (Math.abs(m.vx) < MIN_SPEED) m.vx = 0;
+    if (Math.abs(m.vy) < MIN_SPEED) m.vy = 0;
+    if (m.x - m.radius < 0) { m.x = m.radius; m.vx = -m.vx*WALL_BOUNCE; }
+    if (m.x + m.radius > w) { m.x = w-m.radius; m.vx = -m.vx*WALL_BOUNCE; }
+    if (m.y - m.radius < 0) { m.y = m.radius; m.vy = -m.vy*WALL_BOUNCE; }
+    if (m.y + m.radius > h) { m.y = h-m.radius; m.vy = -m.vy*WALL_BOUNCE; }
+  });
+
+  for (let i = 0; i < state.marbles.length; i++) {
+    const a = state.marbles[i];
+    if (!a.alive) continue;
+    for (let j = i+1; j < state.marbles.length; j++) {
+      const b = state.marbles[j];
+      if (!b.alive) continue;
+      const dx = b.x-a.x, dy = b.y-a.y;
+      const dist = Math.hypot(dx,dy);
+      const minDist = a.radius + b.radius;
+      if (dist < minDist && dist > 0.001) {
+        const nx = dx/dist, ny = dy/dist;
+        const overlap = minDist - dist;
+        const totalMass = a.mass + b.mass;
+        a.x -= nx * overlap * (b.mass/totalMass);
+        a.y -= ny * overlap * (b.mass/totalMass);
+        b.x += nx * overlap * (a.mass/totalMass);
+        b.y += ny * overlap * (a.mass/totalMass);
+        const dvx = b.vx-a.vx, dvy = b.vy-a.vy;
+        const vn = dvx*nx + dvy*ny;
+        if (vn < 0) {
+          const e = 0.7;
+          const impulse = -(1+e)*vn/totalMass;
+          a.vx -= impulse*b.mass*nx; a.vy -= impulse*b.mass*ny;
+          b.vx += impulse*a.mass*nx; b.vy += impulse*a.mass*ny;
+          sfxCollision();
+        }
+      }
+    }
+  }
+}
+
+function checkTargetsOut() {
+  state.targets.forEach(t2 => {
+    if (!t2.alive) return;
+    if (!pointInBoard(t2.x, t2.y)) {
+      t2.alive = false;
+      const player = state.players[state.activePlayerIndex];
+      player.score += 1;
+      sfxTargetOut();
+      showToast(progress.language === 'en' ? `+1 marble for ${player.name}!` : `+1 kelereng untuk ${player.name}!`);
+      renderHUDPanel();
+    }
+  });
+}
+
+function checkAllStopped() {
+  if (state.phase !== PHASE.SHOOTING) return;
+  const allStopped = state.marbles.every(m =>
+    !m.alive || (Math.abs(m.vx) < 0.05 && Math.abs(m.vy) < 0.05)
+  );
+  if (!allStopped) return;
+
+  state.marbles.forEach(m => { if (m.alive) { m.vx = 0; m.vy = 0; } });
+  state.phase = PHASE.SETTLING;
+
+  state.settleTimer = setTimeout(() => {
+    if (state.gameOver) return;
+    if (state.targets.every(t2 => !t2.alive)) {
+      state.phase = PHASE.IDLE;
+      endGame();
+      return;
+    }
+    state.phase = PHASE.SWITCHING;
+    state.switchTimer = setTimeout(() => {
+      if (state.gameOver) return;
+      state.activePlayerIndex = (state.activePlayerIndex + 1) % state.players.length;
+      state.aimingAngle = 0;
+      renderHUDPanel();
+      updateHUDTurn();
+      showTurnBanner();
+      sfxTurn();
+      state.phase = PHASE.IDLE;
+      if (state.players[state.activePlayerIndex].isAI) {
+        scheduleAITurn();
+      }
+    }, 350);
+  }, 400);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const w = canvas.width, h = canvas.height;
+  if (w === 0 || h === 0) return;
+  const cx = w/2, cy = h/2;
+  const boardR = Math.min(w,h) * BOARD_RADIUS_RATIO;
+
+  const grad = ctx.createRadialGradient(cx*0.8, cy*0.8, 20, cx, cy, w*0.8);
+  grad.addColorStop(0, '#a88658');
+  grad.addColorStop(1, '#5e4326');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  if (state.boardShape === BOARD_SHAPE.CIRCLE) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, boardR, 0, Math.PI*2);
+    ctx.strokeStyle = '#d9b382';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 8]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, boardR, 0, Math.PI*2);
+    ctx.strokeStyle = '#5a3e20';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  } else {
+    const verts = [];
+    for (let i = 0; i < 3; i++) {
+      const angle = -Math.PI/2 + (i * 2 * Math.PI / 3);
+      verts.push({ x: cx + Math.cos(angle) * boardR, y: cy + Math.sin(angle) * boardR });
+    }
+    ctx.beginPath();
+    ctx.moveTo(verts[0].x, verts[0].y);
+    ctx.lineTo(verts[1].x, verts[1].y);
+    ctx.lineTo(verts[2].x, verts[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = '#d9b382';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([10, 8]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(verts[0].x, verts[0].y);
+    ctx.lineTo(verts[1].x, verts[1].y);
+    ctx.lineTo(verts[2].x, verts[2].y);
+    ctx.closePath();
+    ctx.strokeStyle = '#5a3e20';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  state.targets.forEach(t2 => { if (t2.alive) drawMarble(t2.x, t2.y, t2.radius, t2.color); });
+
+  state.gacoans.forEach((g, i) => {
+    if (!g.alive) return;
+    const isActive = i === state.activePlayerIndex && state.gameActive && !state.gameOver;
+    if (isActive) {
+      const pulse = 1 + 0.3 * Math.sin(performance.now() / 200);
+      ctx.beginPath();
+      ctx.arc(g.x, g.y, g.radius + 8 * pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = g.color;
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 0.8;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    drawMarble(g.x, g.y, g.radius, g.color);
+  });
+
+  if (state.gameActive && !state.gameOver && state.phase === PHASE.IDLE) {
+    const activePlayer = state.players[state.activePlayerIndex];
+    if (activePlayer && !activePlayer.isAI) {
+      const g = state.gacoans[state.activePlayerIndex];
+      if (g && g.alive) drawAimArrow(g.x, g.y, state.aimingAngle, 26, g.color);
+    }
+  }
+
+  if (state.currentDrag) {
+    const g = state.gacoans[state.currentDrag.playerId];
+    if (g && g.alive) {
+      const power = state.currentDrag.power;
+      ctx.beginPath();
+      ctx.arc(g.x, g.y, g.radius + 5, -Math.PI/2, -Math.PI/2 + Math.PI*2*power);
+      ctx.strokeStyle = `rgba(255,220,100,${0.4 + power*0.5})`;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+  }
+}
+
+function drawMarble(x, y, r, color) {
+  ctx.beginPath();
+  ctx.arc(x+2, y+3, r, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fill();
+  const grad = ctx.createRadialGradient(x-r*0.3, y-r*0.3, r*0.1, x, y, r);
+  grad.addColorStop(0, '#ffffff');
+  grad.addColorStop(0.2, color);
+  grad.addColorStop(1, shadeColor(color, -30));
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.fillStyle = grad; ctx.fill();
+  ctx.beginPath(); ctx.arc(x-r*0.3, y-r*0.3, r*0.3, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+}
+
+function drawAimArrow(x, y, angle, length, color) {
+  const startX = x + Math.cos(angle) * (GACOAN_RADIUS + 6);
+  const startY = y + Math.sin(angle) * (GACOAN_RADIUS + 6);
+  const endX = startX + Math.cos(angle) * length;
+  const endY = startY + Math.sin(angle) * length;
+  ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY);
+  ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineCap='round'; ctx.stroke();
+  const headLen = 8, headAngle = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(endX - headLen*Math.cos(angle-headAngle), endY - headLen*Math.sin(angle-headAngle));
+  ctx.lineTo(endX - headLen*Math.cos(angle+headAngle), endY - headLen*Math.sin(angle+headAngle));
+  ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+  const pulse = 1 + 0.2*Math.sin(performance.now()/200);
+  ctx.beginPath(); ctx.arc(startX, startY, 3*pulse, 0, Math.PI*2);
+  ctx.fillStyle = '#ffd966'; ctx.fill();
+}
+
+function shadeColor(color, percent) {
+  let R = parseInt(color.substring(1,3),16);
+  let G = parseInt(color.substring(3,5),16);
+  let B = parseInt(color.substring(5,7),16);
+  R = Math.min(255, Math.max(0, R+percent));
+  G = Math.min(255, Math.max(0, G+percent));
+  B = Math.min(255, Math.max(0, B+percent));
+  return '#' + ((1<<24)+(R<<16)+(G<<8)+B).toString(16).slice(1);
+}
+
+// ============================================================
+// INPUT
+// ============================================================
+function getCanvasCoords(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: (clientX-rect.left)*scaleX, y: (clientY-rect.top)*scaleY };
+}
+function handlePointerDown(e) {
+  if (!state.gameActive || state.gameOver) return;
+  if (state.phase !== PHASE.IDLE) return;
+  if (state.players[state.activePlayerIndex].isAI) return;
+  const pos = getCanvasCoords(e);
+  const g = state.gacoans[state.activePlayerIndex];
+  if (!g || !g.alive) return;
+  const dist = Math.hypot(pos.x-g.x, pos.y-g.y);
+  if (dist < g.radius + 25) {
+    state.currentDrag = {
+      playerId: state.activePlayerIndex,
+      startX: pos.x, startY: pos.y,
+      currentX: pos.x, currentY: pos.y,
+      power: 0,
+    };
+    e.preventDefault();
+  }
+}
+function handlePointerMove(e) {
+  if (!state.currentDrag) return;
+  e.preventDefault();
+  const pos = getCanvasCoords(e);
+  state.currentDrag.currentX = pos.x;
+  state.currentDrag.currentY = pos.y;
+  const dx = pos.x - state.currentDrag.startX;
+  const dy = pos.y - state.currentDrag.startY;
+  const dist = Math.hypot(dx, dy);
+  state.aimingAngle = Math.atan2(-dy, -dx);
+  const maxDrag = Math.min(canvas.width, canvas.height) * 0.25;
+  state.currentDrag.power = Math.min(dist / maxDrag, 1);
+}
+function handlePointerUp(e) {
+  if (!state.currentDrag) return;
+  const g = state.gacoans[state.currentDrag.playerId];
+  if (g && state.currentDrag.power > 0.05) {
+    const power = state.currentDrag.power * 18;
+    g.vx = Math.cos(state.aimingAngle) * power;
+    g.vy = Math.sin(state.aimingAngle) * power;
+    state.phase = PHASE.SHOOTING;
+    sfxShoot();
+  }
+  state.currentDrag = null;
+}
+
+canvas.addEventListener('pointerdown', handlePointerDown);
+canvas.addEventListener('pointermove', handlePointerMove);
+canvas.addEventListener('pointerup', handlePointerUp);
+canvas.addEventListener('pointercancel', handlePointerUp);
+canvas.addEventListener('pointerleave', handlePointerUp);
+
+// ============================================================
+// AI
+// ============================================================
+function scheduleAITurn() {
+  if (state.gameOver) return;
+  state.aiThinking = true;
+  showToast(progress.language === 'en' ? '🤖 COMPUTER IS AIMING...' : '🤖 COMPUTER SEDANG MEMBIDIK...');
+  const delay = 900 + Math.random()*700;
+  state.aiTimer = setTimeout(() => {
+    if (state.gameOver || !state.gameActive || state.phase !== PHASE.IDLE) {
+      state.aiThinking = false; return;
+    }
+    performAIShot();
+  }, delay);
+}
+
+function performAIShot() {
+  const g = state.gacoans[state.activePlayerIndex];
+  if (!g || !g.alive) { state.aiThinking = false; return; }
+
+  let nearestTarget = null, nearestDist = Infinity;
+  state.targets.forEach(t2 => {
+    if (!t2.alive) return;
+    const d = Math.hypot(t2.x-g.x, t2.y-g.y);
+    if (d < nearestDist) { nearestDist = d; nearestTarget = t2; }
+  });
+
+  let angle, power;
+  const diff = state.aiDifficulty;
+  if (nearestTarget) {
+    const baseAngle = Math.atan2(nearestTarget.y-g.y, nearestTarget.x-g.x);
+    let angleError = 0, powerError = 0;
+    if (diff === 'easy') { angleError = 0.3; powerError = 0.35; }
+    else if (diff === 'normal') { angleError = 0.14; powerError = 0.2; }
+    else { angleError = 0.05; powerError = 0.08; }
+    angle = baseAngle + (Math.random()-0.5)*2*angleError;
+    const idealPower = Math.min(nearestDist/180, 1.2) * 16;
+    power = idealPower * (1 + (Math.random()-0.5)*2*powerError);
+  } else {
+    angle = Math.random()*Math.PI*2;
+    power = 10 + Math.random()*8;
+  }
+  power = Math.max(4, Math.min(power, 22));
+  state.aimingAngle = angle;
+  render();
+  setTimeout(() => {
+    if (state.gameOver || state.phase !== PHASE.IDLE) { state.aiThinking = false; return; }
+    g.vx = Math.cos(angle)*power;
+    g.vy = Math.sin(angle)*power;
+    state.phase = PHASE.SHOOTING;
+    state.aiThinking = false;
+    sfxShoot();
+  }, 400);
+}
+
+// ============================================================
+// END GAME
+// ============================================================
+function endGame() {
+  if (state.gameOver) return;
+  state.gameOver = true;
+  state.gameActive = false;
+  clearAllTimers();
+
+  const sorted = [...state.players].sort((a,b) => b.score - a.score);
+  const winner = sorted[0];
+  const totalBet = state.players.reduce((a,p)=>a+p.bet, 0);
+
+  sfxWin();
+
+  const isEn = progress.language === 'en';
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed; inset:0; background:rgba(0,0,0,0.9);
+    display:flex; align-items:center; justify-content:center;
+    z-index:1000; padding:20px;
+  `;
+  overlay.innerHTML = `
+    <div style="background:linear-gradient(145deg,#5a4327,#2f1f0e); border:4px solid #b89b6b; border-radius:36px; padding:22px 28px; max-width:500px; width:100%; text-align:center; box-shadow:0 20px 40px black; max-height:92vh; overflow:auto;">
+      <div style="font-size:2.2rem;">🏆</div>
+      <div style="font-size:1.6rem; font-weight:800; color:#ffd966; margin:4px 0 8px;">${isEn ? 'WINNER' : 'PEMENANG'}</div>
+      <div style="font-size:1.3rem; font-weight:700; color:${winner.color}; margin-bottom:10px;">${winner.name}</div>
+      <div style="background:#2e1f0e; border:2px dashed #ffd966; border-radius:20px; padding:10px; margin-bottom:14px;">
+        <div style="color:#ffd966; font-weight:800; font-size:1.05rem;">${isEn ? 'WON BET' : 'MENANG TARUHAN'}: ${totalBet} ${isEn ? 'MARBLES' : 'KELERENG'}</div>
+        <div style="color:#dac292; font-size:0.8rem; margin-top:4px;">${state.players.map(p => `${p.name}: ${p.bet}`).join(' • ')}</div>
+      </div>
+      <div style="background:#1f1307cc; border-radius:18px; padding:10px; margin-bottom:14px; border:1px solid #b89b6b; text-align:left;">
+        ${sorted.map((p,i)=>{
+          const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'4️⃣';
+          const winBet = i===0 ? `<span style="color:#ffd966;">+${totalBet - p.bet}</span>` : `<span style="color:#e74c3c;">−${p.bet}</span>`;
+          return `<div style="display:flex; justify-content:space-between; padding:5px 10px; color:#f0e0b0; font-weight:600; border-bottom:1px solid #5a4327; font-size:0.9rem;">
+            <span>${medal} ${p.name}</span>
+            <span><span class="hud-marble-icon"></span> ${p.score} ${winBet}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <button class="btn" id="playAgainBtn" style="width:100%; margin-bottom:8px;">${isEn ? 'PLAY AGAIN' : 'MAIN LAGI'}</button>
+      <button class="btn btn-secondary" id="backToMenuBtn" style="width:100%;">${isEn ? 'BACK TO MENU' : 'KEMBALI KE MENU'}</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('playAgainBtn').onclick = () => {
+    document.body.removeChild(overlay);
+    const config = state.players.map(p => ({ name:p.name, color:p.color, isAI:p.isAI }));
+    const bets = state.players.map(p => p.bet);
+    initGame(config, bets);
+  };
+  document.getElementById('backToMenuBtn').onclick = () => {
+    document.body.removeChild(overlay);
+    showScreen('home');
+    state.gameActive = false;
+    if (state.animationId) cancelAnimationFrame(state.animationId);
+  };
+}
+
+// ============================================================
+// LOBBY
+// ============================================================
+function generateRoomCode() { return 'KLR-' + Math.floor(1000 + Math.random()*9000); }
+function renderLobby() {
+  const list = document.getElementById('lobbyList');
+  list.innerHTML = '';
+  for (let i = 0; i < state.lobbyMaxPlayers; i++) {
+    const p = state.lobbyPlayers[i];
+    const d = document.createElement('div');
+    d.className = 'lobby-item';
+    if (p) d.innerHTML = `<span class="color-dot" style="background:${PLAYER_COLORS[i%PLAYER_COLORS.length]};"></span> ${p.name}`;
+    else d.innerHTML = `<span class="color-dot" style="background:#555;"></span> <em style="color:#888;">${t('waitingPlayers')}</em>`;
+    list.appendChild(d);
+  }
+  const enough = state.lobbyPlayers.length >= 2;
+  document.getElementById('startRoomBtn').disabled = !enough;
+  updateLobbyStatus();
+}
+
+// ============================================================
+// MODAL KONFIRMASI
+// ============================================================
+function showConfirmModal(title, message, onYes, onNo) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <div class="modal-actions">
+        <button class="btn" id="modalYes">YA</button>
+        <button class="btn btn-secondary" id="modalNo">TIDAK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('modalYes').onclick = () => { document.body.removeChild(overlay); onYes(); };
+  document.getElementById('modalNo').onclick = () => { document.body.removeChild(overlay); if (onNo) onNo(); };
+}
+
+// ============================================================
+// EVENT DELEGATION
+// ============================================================
+document.addEventListener('click', (e) => {
+  const shapeBtn = e.target.closest('[data-shape]');
+  if (shapeBtn) {
+    state.boardShape = shapeBtn.dataset.shape;
+    document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+    shapeBtn.classList.add('active');
+    sfxBet();
+    return;
+  }
+
+  const inc = e.target.closest('[data-bet-inc]');
+  const dec = e.target.closest('[data-bet-dec]');
+  if (inc) {
+    const i = parseInt(inc.dataset.betInc);
+    state.betAmounts[i] = Math.min(50, state.betAmounts[i] + 1);
+    sfxBet();
+    updateBetPool();
+    return;
+  }
+  if (dec) {
+    const i = parseInt(dec.dataset.betDec);
+    state.betAmounts[i] = Math.max(1, state.betAmounts[i] - 1);
+    sfxBet();
+    updateBetPool();
+    return;
+  }
+
+  const tM = e.target.closest('#toggleMusic');
+  if (tM) {
+    progress.musicEnabled = !progress.musicEnabled;
+    saveProgress(progress);
+    updateSoundUI();
+    if (progress.musicEnabled) startMusic(); else stopMusic();
+    return;
+  }
+  const tS = e.target.closest('#toggleSfx');
+  if (tS) {
+    progress.sfxEnabled = !progress.sfxEnabled;
+    saveProgress(progress);
+    updateSoundUI();
+    if (progress.sfxEnabled) sfxBet();
+    return;
+  }
+  const langBtn = e.target.closest('[data-lang]');
+  if (langBtn) {
+    progress.language = langBtn.dataset.lang;
+    saveProgress(progress);
+    updateSoundUI();
+    applyTranslations();
+    showToast(progress.language === 'id' ? 'Bahasa: Indonesia' : 'Language: English');
+    return;
+  }
+
+  const target = e.target.closest('[data-action]');
+  if (!target) return;
+  const action = target.dataset.action;
+
+  switch (action) {
+    case 'play': showScreen('play'); break;
+    case 'multiplayer': showScreen('multiplayer'); break;
+    case 'vscomputer': showScreen('vsComputer'); break;
+    case 'howto': showScreen('howTo'); break;
+    case 'settings': updateSoundUI(); showScreen('settings'); break;
+    case 'backHome': showScreen('home'); break;
+    case 'backMultiplayer': showScreen('multiplayer'); break;
+    case 'backPlayMode': showScreen('play'); break;
+    case 'backFromBet':
+      showScreen(state.betReturnScreen || 'play');
+      break;
+
+    case 'local2p':
+      openBetPage([
+        { name: t('menu2p').replace('👥 ','').replace(' 2',' 1').substring(0,0) || 'PEMAIN 1', color:PLAYER_COLORS[0], isAI:false },
+        { name: 'PEMAIN 2', color:PLAYER_COLORS[1], isAI:false },
+      ], 'play'); break;
+    case 'local3p':
+      openBetPage([
+        { name: 'PEMAIN 1', color:PLAYER_COLORS[0], isAI:false },
+        { name: 'PEMAIN 2', color:PLAYER_COLORS[1], isAI:false },
+        { name: 'PEMAIN 3', color:PLAYER_COLORS[2], isAI:false },
+      ], 'play'); break;
+    case 'local4p':
+      openBetPage([
+        { name: 'PEMAIN 1', color:PLAYER_COLORS[0], isAI:false },
+        { name: 'PEMAIN 2', color:PLAYER_COLORS[1], isAI:false },
+        { name: 'PEMAIN 3', color:PLAYER_COLORS[2], isAI:false },
+        { name: 'PEMAIN 4', color:PLAYER_COLORS[3], isAI:false },
+      ], 'play'); break;
+
+    case 'gotoBetVsComputer': {
+      const name = document.getElementById('playerNameVs').value.trim() || 'PEMAIN 1';
+      state.aiDifficulty = document.getElementById('aiDifficulty').value;
+      openBetPage([
+        { name:name, color:PLAYER_COLORS[0], isAI:false },
+        { name:'COMPUTER', color:PLAYER_COLORS[1], isAI:true },
+      ], 'vsComputer');
+      break;
+    }
+
+    case 'startBetGame':
+      if (state.pendingConfig) {
+        const nameInputs = document.querySelectorAll('.bet-name-input');
+        nameInputs.forEach(inp => {
+          const idx = parseInt(inp.dataset.nameIdx);
+          if (state.pendingConfig[idx]) {
+            state.pendingConfig[idx].name = inp.value.trim() || state.pendingConfig[idx].name;
+          }
+        });
+        initGame(state.pendingConfig, state.betAmounts);
+        state.pendingConfig = null;
+      }
+      break;
+
+    case 'createRoom': showScreen('createRoom'); break;
+
+    case 'doCreateRoom': {
+      const name = document.getElementById('hostName').value.trim() || 'Amelia';
+      state.lobbyMaxPlayers = parseInt(document.getElementById('maxPlayers').value);
+      state.roomCode = generateRoomCode();
+      state.isHost = true;
+      state.lobbyPlayers = [{ name }];
+      document.getElementById('roomCodeDisplay').textContent = state.roomCode;
+      renderLobby();
+      showScreen('roomLobby');
+      break;
+    }
+    case 'copyRoomCode':
+      navigator.clipboard.writeText(state.roomCode).then(()=>showToast('📋 OK!')).catch(()=>showToast('📋 '+state.roomCode));
+      break;
+    case 'inviteFriend':
+      if (navigator.share) navigator.share({ title:'KELERENG NUSANTARA', text:`Kode room: ${state.roomCode}` }).catch(()=>{});
+      else showToast('🔗 Kode: '+state.roomCode);
+      break;
+    case 'goToRoomBet': {
+      if (state.lobbyPlayers.length < 2) return;
+      const config = state.lobbyPlayers.map((p,i)=>({ name:p.name, color:PLAYER_COLORS[i%PLAYER_COLORS.length], isAI:false }));
+      openBetPage(config, 'roomLobby');
+      break;
+    }
+    case 'joinRoom': showScreen('joinRoom'); break;
+    case 'doJoinRoom': {
+      const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+      const name = document.getElementById('joinName').value.trim() || 'Budi';
+      if (code.startsWith('KLR-') && code.length >= 7) {
+        document.getElementById('joinStatus').textContent = '✅ OK!';
+        state.roomCode = code;
+        state.isHost = false;
+        state.lobbyMaxPlayers = 4;
+        state.lobbyPlayers = [{ name:'Host' }, { name }];
+        document.getElementById('roomCodeDisplay').textContent = code;
+        renderLobby();
+        setTimeout(()=>showScreen('roomLobby'), 500);
+      } else {
+        document.getElementById('joinStatus').textContent = '❌ KLR-XXXX';
+      }
+      break;
+    }
+    case 'tryQuitGame':
+      showConfirmModal(
+        progress.language === 'en' ? 'LEAVE GAME?' : 'KELUAR DARI PERMAINAN?',
+        progress.language === 'en' ? 'Are you sure you want to leave?' : 'Yakin ingin keluar dari permainan?',
+        () => {
+          clearAllTimers();
+          state.gameActive = false; state.gameOver = true;
+          state.phase = PHASE.IDLE;
+          if (state.animationId) cancelAnimationFrame(state.animationId);
+          showScreen('home');
+        }
+      );
+      break;
+  }
+});
+
+// Volume slider
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'volSlider') {
+    progress.volumeLevel = parseInt(e.target.value) / 100;
+    saveProgress(progress);
+    const label = document.getElementById('volLabel');
+    if (label) label.textContent = Math.round(progress.volumeLevel * 100) + '%';
+    e.target.style.setProperty('--val', (progress.volumeLevel*100)+'%');
+  }
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer = null;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 1800);
+}
+
+// ============================================================
+// STARTUP
+// ============================================================
+window.addEventListener('resize', () => {
+  if (state.screen === 'game') resizeCanvas();
+});
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => { if (state.screen === 'game') resizeCanvas(); }, 200);
+});
+
+showScreen('home');
+applyTranslations();
+updateSoundUI();
+
+// Auto-start music setelah interaksi user pertama
+function autoStartMusicOnce() {
+  if (progress.musicEnabled) startMusic();
+  document.removeEventListener('click', autoStartMusicOnce);
+  document.removeEventListener('touchstart', autoStartMusicOnce);
+}
+document.addEventListener('click', autoStartMusicOnce);
+document.addEventListener('touchstart', autoStartMusicOnce);
+
+setTimeout(()=>showToast('🎮 KELERENG NUSANTARA'), 600);
+</script>
+</body>
+</html>
